@@ -52,11 +52,15 @@ class DockerSandbox(Sandbox):
 
 class MsbSandbox(Sandbox):
     driver = "microsandbox"
+    mem_mb = 2048  # headless Chromium; Microsandbox's own Playwright guide uses 2 GB
 
     async def prepare(self):
-        rule = f"allow@host.microsandbox.internal:tcp:{config.PROXY_PORT}"
+        # Airgapped (default deny) except: the host egress proxy port, and DNS so the
+        # sandbox can resolve host.microsandbox.internal. Everything else is dropped.
+        rule = f"allow@host:tcp:{config.PROXY_PORT},allow@dns"
         code, outp = await run("msb", "create", "--name", self.sandbox_id, "--cpus", str(self.cpus),
-                               "--memory", f"{self.mem_mb}M", "--no-net", "--net-rule", rule, MSB_IMAGE, timeout=600)
+                               "--memory", f"{self.mem_mb}M", "--no-net", "--net-rule", rule,
+                               "--label", "app=slate", MSB_IMAGE, timeout=900)
         if code != 0:
             raise SandboxError(f"msb create failed: {outp[-600:]}")
         code, outp = await run("msb", "copy", str(WORKER), f"{self.sandbox_id}:/tmp/agent_worker.py")
@@ -64,13 +68,12 @@ class MsbSandbox(Sandbox):
             raise SandboxError(f"msb copy failed: {outp[-600:]}")
 
     async def command(self):
-        return ["msb", "exec", self.sandbox_id, "--", "python3", "-u", "/tmp/agent_worker.py"]
+        return ["msb", "exec", "--stream", self.sandbox_id, "--", "python3", "-u", "/tmp/agent_worker.py"]
 
     async def destroy(self):
         proof = await super().destroy()
-        await run("msb", "stop", self.sandbox_id, timeout=60)
-        await run("msb", "remove", self.sandbox_id, timeout=60)
-        code, outp = await run("msb", "list")
+        await run("msb", "rm", "--force", self.sandbox_id, timeout=90)
+        code, outp = await run("msb", "ls", "-q")
         proof.update(destroyed=(code == 0 and self.sandbox_id not in outp),
                      status="microVM stopped and removed", evidence=f"msb list contains sandbox: {self.sandbox_id in outp}")
         return proof
