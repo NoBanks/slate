@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brightline Supply | Industrial LED panel, 600x600, 40W</title>
+<style>
+  :root { --navy:#0f2a4a; --sun:#ffb400; --ink:#1d2733; --muted:#5f6b7a; --line:#e3e8ef; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family: "Segoe UI", Roboto, Arial, sans-serif; color:var(--ink); background:#f6f8fb; }
+  header { background:var(--navy); color:#fff; padding:14px 24px; display:flex; align-items:center; gap:12px; }
+  .logo { width:34px; height:34px; border-radius:50%; background:radial-gradient(circle at 40% 40%, #fff6cc, var(--sun) 60%); box-shadow:0 0 18px rgba(255,180,0,.6); }
+  header b { font-size:20px; letter-spacing:.5px; }
+  header nav { margin-left:auto; font-size:14px; opacity:.85; }
+  header nav a { color:#fff; margin-left:18px; text-decoration:none; }
+  .crumbs { max-width:1040px; margin:18px auto 0; padding:0 24px; font-size:13px; color:var(--muted); }
+  main { max-width:1040px; margin:12px auto 40px; padding:0 24px; display:grid; grid-template-columns: 1fr 1fr; gap:32px; }
+  .hero { background:#fff; border:1px solid var(--line); border-radius:10px; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; }
+  .panel { width:68%; aspect-ratio:1/1; background:linear-gradient(135deg,#ffffff,#eef3f9); border:10px solid #c9d2dd; border-radius:4px; box-shadow:0 0 60px rgba(255,214,102,.55) inset, 0 10px 30px rgba(15,42,74,.15); }
+  h1 { margin:0 0 6px; font-size:28px; }
+  .sku { color:var(--muted); font-size:13px; margin-bottom:16px; }
+  .ship { display:inline-block; background:#e7f6ec; color:#17733a; padding:4px 10px; border-radius:20px; font-size:13px; font-weight:600; }
+  table { width:100%; border-collapse:collapse; margin:18px 0; background:#fff; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  th, td { padding:10px 14px; text-align:left; border-bottom:1px solid var(--line); font-size:15px; }
+  th { background:#eef2f7; font-size:13px; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); }
+  tr.best td { background:#fff8e1; font-weight:700; }
+  .cta { display:inline-block; background:var(--sun); color:#1b1300; font-weight:700; padding:13px 26px; border-radius:6px; text-decoration:none; }
+  .specs { grid-column:1 / -1; background:#fff; border:1px solid var(--line); border-radius:10px; padding:20px 24px; }
+  .specs dl { display:grid; grid-template-columns: 200px 1fr; gap:8px 16px; margin:0; font-size:14px; }
+  .specs dt { color:var(--muted); }
+  footer { text-align:center; font-size:12px; color:var(--muted); padding:30px; }
+  @media (max-width:760px){ main { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header><div class="logo"></div><b>Brightline Supply</b><nav><a href="index.html">Lighting</a><a href="index.html">Controls</a><a href="quote.html">Quotes</a></nav></header>
+<div class="crumbs">Home / Commercial Lighting / Flat Panels</div>
+<main>
+  <div class="hero"><div class="panel"></div></div>
+  <section>
+    <h1>Industrial LED panel, 600x600, 40W</h1>
+    <div class="sku">SKU BL-P6640 &middot; 4000K neutral white &middot; 4,400 lm</div>
+    <span class="ship">Ships in 5 days</span>
+    <table id="pricing">
+      <thead><tr><th>Quantity</th><th>Unit price (USD)</th></tr></thead>
+      <tbody>
+        <tr data-qty-min="1" data-unit-price="18.40"><td>1 to 99</td><td>$18.40</td></tr>
+        <tr data-qty-min="100" data-unit-price="17.60"><td>100 to 249</td><td>$17.60</td></tr>
+        <tr class="best" data-qty-min="250" data-unit-price="16.90"><td>250+</td><td>$16.90</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:#5f6b7a">Volume pricing applies automatically. Lead time: 5 business days from our Ontario, CA warehouse.</p>
+    <a class="cta" id="request-quote" href="quote.html">Request a quote</a>
+  </section>
+  <div class="specs">
+    <h3 style="margin-top:0">Specifications</h3>
+    <dl>
+      <dt>Dimensions</dt><dd>595 x 595 x 10 mm (fits 600x600 grid ceilings)</dd>
+      <dt>Power</dt><dd>40W, 100 to 277V AC, 0-10V dimmable driver</dd>
+      <dt>Luminous flux</dt><dd>4,400 lm (110 lm/W)</dd>
+      <dt>CRI</dt><dd>&gt;80</dd>
+      <dt>Rating</dt><dd>IP40, UL and DLC listed</dd>
+      <dt>Warranty</dt><dd>5 years</dd>
+    </dl>
+  </div>
+</main>
+<footer>&copy; 2026 Brightline Supply Co. Demo vendor site for the SLATE project.</footer>
+</body>
+</html>
