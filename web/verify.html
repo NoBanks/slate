@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLATE | Verify a receipt</title>
+<meta name="description" content="Check a SLATE receipt bundle: every hash, the chain, and the Ed25519 signatures. No trust required.">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="slate-header">
+  <div class="clapper"></div>
+  <div class="bar">
+    <div class="wordmark">SLATE</div>
+    <div class="tagline">Check any receipt. Change one byte and the chain breaks.</div>
+    <nav><a href="/">Run</a><a href="/verify" class="active">Verify</a><a href="https://github.com/NoBanks/slate" target="_blank" rel="noopener">GitHub</a></nav>
+  </div>
+</header>
+
+<main class="verify-wrap">
+  <div class="drop" id="drop">
+    <b>Drop a receipt bundle here</b><br>or <label style="text-decoration:underline;cursor:pointer">choose a file<input type="file" id="file" accept=".json,application/json" hidden></label>, or paste the JSON below.
+  </div>
+  <textarea id="bundle" placeholder='{"task_id": "...", "steps": [...], "final": {...}}' spellcheck="false"></textarea>
+  <div class="verify-actions">
+    <button class="btn" id="verify" type="button">Verify</button>
+    <button class="btn red" id="tamper" type="button" title="Flip one character in step 1's intent and verify again">Tamper one byte</button>
+    <button class="btn ghost" id="clear" type="button">Clear</button>
+  </div>
+
+  <div class="verdict" id="verdict"></div>
+  <div id="tamper-note" class="statusline"></div>
+
+  <div class="panel" id="results" style="display:none">
+    <table class="checks">
+      <thead><tr><th>Step</th><th>Hash</th><th>Chain link</th><th>Signature</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="pubkey" id="pubkey"></div>
+  </div>
+</main>
+
+<footer class="site">Verification recomputes every hash from the receipt contents, checks each prev_hash link, and checks every Ed25519 signature against the server's public key.</footer>
+<script src="/static/verify.js"></script>
+</body>
+</html>

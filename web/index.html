@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLATE | Every agent action, on the record</title>
+<meta name="description" content="SLATE is a browser agent that works inside a throwaway microVM on Vultr and returns a signed, hash-chained receipt for every step.">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="slate-header">
+  <div class="clapper"></div>
+  <div class="bar">
+    <div class="wordmark">SLATE</div>
+    <div class="tagline">Every agent action, on the record.</div>
+    <nav><a href="/" class="active">Run</a><a href="/verify">Verify</a><a href="https://github.com/NoBanks/slate" target="_blank" rel="noopener">GitHub</a></nav>
+    <div class="take" id="take">TAKE --</div>
+  </div>
+</header>
+
+<main>
+  <form class="task-form" id="task-form">
+    <label class="lbl" for="goal">Task</label>
+    <textarea id="goal" name="goal">Get a price for 250 units of 'Industrial LED panel, 600x600, 40W' from Brightline Supply, Lumen Depot and Northfield Electric, pick the cheapest safe vendor, and fill out its quote request form.</textarea>
+    <div class="controls">
+      <label class="toggle" for="safety">
+        <span>Injection screen</span>
+        <input type="checkbox" id="safety" checked>
+        <span class="track"></span>
+      </label>
+      <button class="btn" id="start" type="submit">Start</button>
+    </div>
+  </form>
+
+  <div class="statusline" id="statusline"><span class="dot"></span><span id="status">Ready. Every step will be hashed, chained and signed.</span></div>
+  <div id="alerts"></div>
+
+  <section class="live">
+    <div>
+      <h3 class="col-title"><span>Step feed</span><span id="stepcount">0 steps</span></h3>
+      <div id="feed"><div class="empty" id="empty">No take yet. Start a task and each step shows up here with its screenshot and an independent verifier verdict.</div></div>
+      <div class="final" id="final">
+        <h3>Wrap. Receipt sealed.</h3>
+        <div class="grid" id="final-grid"></div>
+        <div class="actions">
+          <a class="btn" id="dl-bundle" href="#" download>Download receipt bundle</a>
+          <a class="btn ghost" id="verify-link" href="/verify">Verify it</a>
+        </div>
+      </div>
+    </div>
+    <aside class="side">
+      <div class="panel">
+        <h3 class="col-title"><span>Receipt</span><span id="receipt-step">select a step</span></h3>
+        <pre id="receipt">{}</pre>
+      </div>
+      <div class="panel">
+        <h3 class="col-title"><span>Egress log</span><span id="egress-count">0 requests</span></h3>
+        <ul id="egress"></ul>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<div class="modal" id="approval">
+  <div class="box">
+    <h2>Human approval required</h2>
+    <div class="sub" id="approval-summary">The agent wants to take a final action.</div>
+    <img id="approval-shot" alt="Screenshot of the page before the final action">
+    <div class="verifier" id="approval-verifier"></div>
+    <div class="row">
+      <button class="btn red" id="reject" type="button">Reject</button>
+      <button class="btn amber" id="approve" type="button">Approve</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal lightbox" id="lightbox"><div class="box"><img id="lightbox-img" alt="Step screenshot"></div></div>
+
+<footer class="site">SLATE runs on Vultr Cloud Compute with Vultr Serverless Inference. Open source, MIT.</footer>
+<script src="/static/app.js"></script>
+</body>
+</html>
