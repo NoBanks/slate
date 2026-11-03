@@ -115,6 +115,10 @@ Download a bundle from any finished task and drop it on `/verify`, or `POST /api
 
 Agents can now click, type and submit on the real web, but companies will not let them near real workflows because nobody can prove what the agent saw, did, or why. Audit trails are the missing piece: compliance teams need evidence (the EU AI Act, Article 12, requires automatic event logging for high-risk AI systems), and disputes need proof. SLATE turns agent output into evidence.
 
+## Build log
+
+All code in this repository was written from scratch on Nov 3 to 8, 2026, the event's online build dates. The first commit is Nov 3, 06:54 PT (shortly before the 8:00 AM PT kick-off stream). Only planning and copywriting happened before Nov 3. The full history is in the commits.
+
 ## License
 
 MIT. Built solo by Ryan Hammer (NoBanks) during the Vultr: Agent Rush hackathon, Nov 3 to 8, 2026.
