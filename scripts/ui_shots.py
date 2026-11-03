@@ -22,8 +22,8 @@ with sync_playwright() as p:
     page.goto(base + "/")
     page.screenshot(path=str(out / f"{tag}_0_home.png"))
     if red:
-        page.uncheck("#safety")
-        page.check("#redteam")
+        page.click("label[for=safety]")
+        page.click("label[for=redteam]")
     page.click("#start")
     approved = False
     t0 = time.time()
