@@ -31,9 +31,12 @@ id $APPUSER >/dev/null 2>&1 || useradd -m -s /bin/bash $APPUSER
 usermod -aG kvm $APPUSER || true
 ls -l /dev/kvm || echo "WARNING: /dev/kvm missing"
 
-# Code
+# Code: from an uploaded archive (/root/slate.tar.gz) if present, else from GitHub
+if [ -f /root/slate.tar.gz ]; then
+  mkdir -p /home/$APPUSER/slate && tar -xzf /root/slate.tar.gz -C /home/$APPUSER/slate && chown -R $APPUSER:$APPUSER /home/$APPUSER/slate
+fi
 sudo -u $APPUSER bash -lc '
-  cd ~ && (test -d slate || git clone https://github.com/NoBanks/slate.git) && cd slate && git pull --ff-only
+  cd ~ && (test -d slate || git clone https://github.com/NoBanks/slate.git) && cd slate
   python3 -m venv .venv && . .venv/bin/activate
   pip install -q -r requirements.txt playwright==1.58.0
   python -m playwright install chromium
