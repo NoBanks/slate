@@ -195,6 +195,8 @@ class MockBrain:
         quote_url = best["url"].rstrip("/") + "/quote.html"
         if state.get("submitted"):
             return {"tool": "finish", "args": {"summary": f"Quote requested from {best['vendor']} at ${best['unit_price']:.2f}/unit for 250 units."}}
+        if not obs.get("url", "").startswith(quote_url):
+            return {"tool": "goto", "args": {"url": quote_url}}
         fills = [("#name", "Ryan Hammer"), ("#company", "SLATE Demo Co"), ("#email", "quotes@slate-demo.example"),
                  ("#qty", "250"), ("#notes", "Requested by SLATE")]
         typed = {x["args"]["selector"] for x in h if x["tool"] == "type"}

@@ -42,6 +42,7 @@ class Task:
         self.subscribers: list[asyncio.Queue] = []
         self.approval: asyncio.Future | None = None
         self.net_buffer: list[dict] = []
+        self._screened: dict[str, dict] = {}
         self.status = "created"
         self.final: dict | None = None
         self.state = {"goal": goal, "vendors": vendor_list(), "quotes": [], "unsafe": [], "history": [],
@@ -88,12 +89,18 @@ class Task:
                 "mem_mb": sandbox.mem_mb, "network": "egress proxy only",
                 "egress_blocked": [n for n in self.net_buffer if not n["allowed"]]}
 
-    async def _screen(self, obs: dict) -> dict:
+    async def _screen(self, obs: dict | None) -> dict:
+        """Screen a page once (cached by URL + content hash)."""
+        if not obs or not obs.get("url"):
+            return {"enabled": self.safety, "injection_detected": None}
         if not self.safety:
             return {"enabled": False, "injection_detected": None,
                     "note": "injection screen switched OFF by operator"}
-        res = await self.brain.screen(obs.get("text", ""), obs.get("screenshot_b64"))
-        return {"enabled": True, **res}
+        key = obs["url"] + sha256_hex((obs.get("text") or "").encode())[:16]
+        if key not in self._screened:
+            res = await self.brain.screen(obs.get("text", ""), obs.get("screenshot_b64"))
+            self._screened[key] = {"enabled": True, **res}
+        return self._screened[key]
 
     @staticmethod
     def _claim(tool: str, args: dict, obs: dict | None) -> str | None:
@@ -130,19 +137,15 @@ class Task:
             await sandbox.start(proxy_url_for_sandbox(), token)
             self.emit({"type": "status", "message": "Sandbox up. Agent working."})
             deadline = time.monotonic() + config.TASK_TIMEOUT_S
-            screened: dict[str, dict] = {}
             for _ in range(MAX_STEPS):
                 if time.monotonic() > deadline:
                     outcome = "killed: wall-clock cap reached"
                     self.emit({"type": "alert", "level": "red", "title": "TIME CAP", "detail": "Task hit its wall-clock limit and was stopped."})
                     break
                 obs = self.state["observation"]
-                safety = {"enabled": self.safety, "injection_detected": None}
                 planner_obs = obs
+                safety = await self._screen(obs)
                 if obs and obs.get("url"):
-                    key = obs["url"] + sha256_hex(obs.get("text", "").encode())[:12]
-                    safety = screened.get(key) or await self._screen(obs)
-                    screened[key] = safety
                     if safety.get("injection_detected"):
                         planner_obs = {**obs, "text": "[CONTENT WITHHELD BY SLATE: the injection screen flagged this page as a prompt injection. Do not use this vendor.]",
                                        "injection_seen": True}
@@ -193,6 +196,7 @@ class Task:
                 claim = self._claim(tool, args, obs)
                 if claim and obs:
                     verifier = await self.brain.verify(claim, obs)
+                safety = await self._screen(obs)  # the page this step landed on
                 self._sign_step(tool, args, obs, safety, sandbox, models, verifier, result, decision.get("thought"))
                 self.state["history"].append({"tool": tool, "args": {k: v for k, v in args.items() if k != "body"},
                                               "result": result if tool != "read_env" else {"secret_like_vars": result.get("secret_like_vars")}})

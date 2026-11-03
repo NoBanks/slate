@@ -191,10 +191,12 @@
     reset();
     $('start').disabled = true;
     const safety = $('safety').checked;
+    const red_team = $('redteam') ? $('redteam').checked : false;
     if (!safety) alertBanner('amber', 'Injection screen OFF', 'Turned off on purpose. The sandbox and egress proxy are now the only defenses.');
+    if (red_team) alertBanner('amber', 'Red team mode', 'The planner is told to obey instructions it finds on web pages. We assume the model is compromised and prove the box still holds.');
     setStatus('Starting a fresh sandbox...', true);
     try {
-      const res = await fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal: $('goal').value, safety }) });
+      const res = await fetch('/api/tasks', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal: $('goal').value, safety, red_team }) });
       if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + (await res.text()));
       const { task_id } = await res.json();
       state.taskId = task_id;
