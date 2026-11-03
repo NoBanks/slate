@@ -123,7 +123,7 @@ class VultrBrain:
         msg = await self._chat(self.models["planner"], [
             {"role": "system", "content": system},
             {"role": "user", "content": [{"type": "text", "text": user_text}, *self._img(obs.get("screenshot_b64"))]},
-        ], tools=TOOLS, tool_choice="auto", temperature=0.1)
+        ], tools=TOOLS, tool_choice="auto", temperature=0.1, max_tokens=4096)
         calls = msg.get("tool_calls") or []
         if not calls:
             return {"tool": "finish", "args": {"summary": msg.get("content") or "no action"}, "thought": msg.get("content")}
@@ -140,7 +140,7 @@ class VultrBrain:
             {"role": "user", "content": [
                 {"type": "text", "text": f"CLAIM: {claim}\nURL: {observation.get('url')}\nPAGE TEXT:\n{(observation.get('text') or '')[:3000]}"},
                 *self._img(observation.get("screenshot_b64"))]},
-        ], temperature=0)
+        ], temperature=0, max_tokens=2048)
         j = _json_from(msg.get("content", ""))
         return {"claim": claim, "verdict": j.get("verdict", "uncertain"),
                 "confidence": float(j.get("confidence", 0) or 0), "observed": j.get("observed", "")}
@@ -152,7 +152,7 @@ class VultrBrain:
             msg = await self._chat(self.models["safety"], [
                 {"role": "system", "content": SAFETY_SYSTEM},
                 {"role": "user", "content": [{"type": "text", "text": (text or "")[:8000]}]},
-            ], temperature=0)
+            ], temperature=0, max_tokens=256)
             content = msg.get("content", "")
             j = _json_from(content)
             if j:
