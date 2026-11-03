@@ -36,7 +36,7 @@ class Task:
         self.id = uuid.uuid4().hex[:12]
         self.goal, self.safety, self.compromised = goal, safety, compromised
         self.signer, self.proxy = signer, proxy
-        self.brain = brain or make_brain()
+        self.brain = brain or make_brain(red_team=compromised)
         self.chain = ReceiptChain(self.id, signer)
         self.events: list[dict] = []
         self.subscribers: list[asyncio.Queue] = []
